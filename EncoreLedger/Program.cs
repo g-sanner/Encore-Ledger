@@ -1,3 +1,29 @@
+using Microsoft.Data.Sqlite;
+
+var connectionString = "Data Source=EncoreLedger.db";
+
+using var connection = new SqliteConnection(connectionString);
+connection.Open();
+
+var command = connection.CreateCommand();
+
+// Initialize schema
+var sql = File.ReadAllText("Sql/init.sql");
+command.CommandText = sql;
+command.ExecuteNonQuery();
+
+// SQLite test
+/* 
+command.CommandText = "SELECT name FROM sqlite_master WHERE type='table';";
+
+using var reader = command.ExecuteReader();
+Console.WriteLine("Tables in database:");
+while (reader.Read())
+{
+    Console.WriteLine($"- {reader.GetString(0)}");
+}
+*/
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

@@ -4,3 +4,8 @@ obj/
 
 # Ignore VS Code specific file(s)
 .vscode/
+
+# Ignore SQLite databases
+*.db
+*.sqlite
+*.sqlite3

@@ -1,0 +1,28 @@
+-- enable foreign keys
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS Category (
+    IDCategory INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL UNIQUE,
+    Description TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Account (
+    IDAccount INTEGER PRIMARY KEY AUTOINCREMENT,
+    AccountType TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS BulkImport (
+    IDCategory INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL UNIQUE,
+    Description TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "Transaction" (
+    IDTransaction INTEGER PRIMARY KEY AUTOINCREMENT,
+    CategoryID INTEGER NOT NULL,
+    Amount REAL NOT NULL,
+    Description TEXT,
+    CreatedAt TEXT NOT NULL,
+    FOREIGN KEY (CategoryID) REFERENCES Category(IDCategory)
+);
