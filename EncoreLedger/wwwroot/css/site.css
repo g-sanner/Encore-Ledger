@@ -1,27 +1,39 @@
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #F5F2ED;
+    color: #2B2A28;
+    font-family: "Georgia", serif;
+    background-color: #E8DFC8;
 }
 
 .navbar {
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    background-color: #1F3D2B;
     padding: 15px 40px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
 }
 
 .navbar a {
     margin-left: 20px;
     text-decoration: none;
     font-weight: bold;
-    color: #333;
+    color: #F4F1E8;
     padding: 8px 14px;
     border-radius: 6px;
 }
 
 .navbar a.active {
-    background-color: #186018;
+    background-color: #0B2D0B;
     color: white;
+}
+
+.navbar a:hover {
+    color: #A67C2D;
 }
 
 .main-container {

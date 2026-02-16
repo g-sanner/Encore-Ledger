@@ -2,35 +2,37 @@
     ViewData["Title"] = "Transaction Dashboard";
 }
 
-<h1>Transaction Dashboard</h1>
+<link rel="stylesheet" href="~/css/dashboard.css" />
 
-<div style="display:flex; gap:40px;">
+<h1 class="page-title">Transaction Dashboard</h1>
 
-    <!-- Sidebar -->
-    <div style="width:260px; display:flex; flex-direction:column; gap:25px;">
+<div class="dashboard-container">
 
-        <div style="background:#f5f5f5; padding:15px; border-radius:8px;">
+    <div class="sidebar">
+
+        <div class="card">
             <h3>Overview</h3>
-            <p><strong>Total Transaction Count:</strong>1</p>
+            <p><strong>Total Transaction Count:</strong> 1</p>
             <p><strong>Last Date Updated:</strong> 02/15/2026</p>
         </div>
 
-        <div style="background:#f5f5f5; padding:15px; border-radius:8px;">
+        <div class="card">
             <h3>Filter Table</h3>
 
             <p>
-                <input type="checkbox"/>
+                <input type="checkbox" />
                 Display Account Name
             </p>
 
             <p><strong>Filter on...</strong></p>
-            <select style="width:100%; padding:5px;">
+
+            <select class="full-width">
                 <option>Date</option>
                 <option>Category</option>
                 <option>Amount</option>
             </select>
 
-            <p style="margin-top:10px;">
+            <p class="mt-small">
                 <input type="checkbox" checked />
                 Ascending
             </p>
@@ -38,22 +40,19 @@
 
     </div>
 
-    <!-- Main Content -->
-    <div style="flex:1;">
+    <div class="main-content">
 
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-            <button style="padding:8px 14px; background:#186018; opacity:0.8; color:white; border:none; border-radius:6px;">
-                + Add New
-            </button>
+        <div class="table-actions">
+            <button class="btn-primary">+ Add New</button>
 
-            <div>
-                <button style="padding:8px 14px; background:#186018; opacity:0.8; color:white;">Edit</button>
-                <button style="padding:8px 14px; background:#186018; opacity:0.8; color:white;">Delete</button>
+            <div class="action-group">
+                <button class="btn-primary">Edit</button>
+                <button class="btn-primary">Delete</button>
             </div>
         </div>
 
-        <table style="width:100%; border-collapse:collapse; background:white;">
-            <thead style="background:#186018; color:white;">
+        <table class="ledger-table">
+            <thead>
                 <tr>
                     <th></th>
                     <th>Date</th>

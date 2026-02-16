@@ -1,0 +1,15 @@
+@using EncoreLedger.Models
+@model Transaction
+
+<h1>Edit Transaction #@Model.IDTransaction</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="IDTransaction" />
+
+    @await Html.PartialAsync(partialViewName: "_CreateEdit", Model)
+
+    <div class="form-actions">
+        <button type="submit" class="btn-primary">Save</button>
+        <button type="submit" asp-action="Delete" class="btn-danger">Delete</button>
+    </div>
+</form>

@@ -1,0 +1,28 @@
+@using EncoreLedger.Models
+@model Transaction
+
+<div class="form-card">
+
+    <div class="form-grid">
+        <div>
+            <label>Date of Transaction</label>
+            <input asp-for="CreatedAt" type="date" />
+        </div>
+
+        <div>
+            <label>Category</label>
+            <select asp-for="CategoryID" asp-items="ViewBag.Categories"></select>
+        </div>
+
+        <div>
+            <label>Amount</label>
+            <input asp-for="Amount" />
+        </div>
+
+        <div>
+            <label>Description</label>
+            <input asp-for="Description" />
+        </div>
+    </div>
+
+</div>

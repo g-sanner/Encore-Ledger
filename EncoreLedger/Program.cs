@@ -4,6 +4,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = "Data Source=EncoreLedger.db";
 
+// Add MVC service
+builder.Services.AddControllersWithViews();
+
+var app = builder.Build();
+
 // Initialize schema
 using (var connection = new SqliteConnection(connectionString))
 {
@@ -15,29 +20,23 @@ using (var connection = new SqliteConnection(connectionString))
     command.ExecuteNonQuery();
 }
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-builder.Services.AddControllersWithViews();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Configure middleware
+if (!app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseExceptionHandler("/Home/Error");
 }
 
 app.UseHttpsRedirection();
-
-// app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthorization();
 
+// Enable MVC routing
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
 
 /*
 app.MapGet("/transactions", () =>
@@ -67,5 +66,3 @@ app.MapGet("/transactions", () =>
     return results;
 });
 */
-
-app.Run();
