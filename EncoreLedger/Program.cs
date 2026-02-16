@@ -1,34 +1,25 @@
 using Microsoft.Data.Sqlite;
 
+var builder = WebApplication.CreateBuilder(args);
+
 var connectionString = "Data Source=EncoreLedger.db";
 
-using var connection = new SqliteConnection(connectionString);
-connection.Open();
-
-var command = connection.CreateCommand();
-
 // Initialize schema
-var sql = File.ReadAllText("Sql/init.sql");
-command.CommandText = sql;
-command.ExecuteNonQuery();
-
-// SQLite test
-/* 
-command.CommandText = "SELECT name FROM sqlite_master WHERE type='table';";
-
-using var reader = command.ExecuteReader();
-Console.WriteLine("Tables in database:");
-while (reader.Read())
+using (var connection = new SqliteConnection(connectionString))
 {
-    Console.WriteLine($"- {reader.GetString(0)}");
-}
-*/
+    connection.Open();
 
-var builder = WebApplication.CreateBuilder(args);
+    var command = connection.CreateCommand();
+    var sql = File.ReadAllText("Sql/init.sql");
+    command.CommandText = sql;
+    command.ExecuteNonQuery();
+}
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -40,28 +31,41 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// app.UseDefaultFiles();
+app.UseStaticFiles();
+app.UseRouting();
 
-app.MapGet("/weatherforecast", () =>
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+/*
+app.MapGet("/transactions", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    using var connection = new SqliteConnection(connectionString);
+    connection.Open();
+
+    var command = connection.CreateCommand();
+    command.CommandText = """
+        SELECT IDTransaction, Description, Amount FROM "Transaction"
+    """;
+
+    using var reader = command.ExecuteReader();
+
+    var results = new List<object>();
+
+    while (reader.Read())
+    {
+        results.Add(new
+        {
+            IDTransaction = reader.GetInt32(0),
+            Description = reader.GetString(1),
+            Amount = reader.GetDecimal(2)
+        });
+    }
+
+    return results;
+});
+*/
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

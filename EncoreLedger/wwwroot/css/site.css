@@ -1,0 +1,29 @@
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #F5F2ED;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 15px 40px;
+}
+
+.navbar a {
+    margin-left: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #333;
+    padding: 8px 14px;
+    border-radius: 6px;
+}
+
+.navbar a.active {
+    background-color: #186018;
+    color: white;
+}
+
+.main-container {
+    padding: 30px 40px;
+}

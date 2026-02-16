@@ -1,0 +1,79 @@
+@{
+    ViewData["Title"] = "Transaction Dashboard";
+}
+
+<h1>Transaction Dashboard</h1>
+
+<div style="display:flex; gap:40px;">
+
+    <!-- Sidebar -->
+    <div style="width:260px; display:flex; flex-direction:column; gap:25px;">
+
+        <div style="background:#f5f5f5; padding:15px; border-radius:8px;">
+            <h3>Overview</h3>
+            <p><strong>Total Transaction Count:</strong>1</p>
+            <p><strong>Last Date Updated:</strong> 02/15/2026</p>
+        </div>
+
+        <div style="background:#f5f5f5; padding:15px; border-radius:8px;">
+            <h3>Filter Table</h3>
+
+            <p>
+                <input type="checkbox"/>
+                Display Account Name
+            </p>
+
+            <p><strong>Filter on...</strong></p>
+            <select style="width:100%; padding:5px;">
+                <option>Date</option>
+                <option>Category</option>
+                <option>Amount</option>
+            </select>
+
+            <p style="margin-top:10px;">
+                <input type="checkbox" checked />
+                Ascending
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Main Content -->
+    <div style="flex:1;">
+
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+            <button style="padding:8px 14px; background:#186018; opacity:0.8; color:white; border:none; border-radius:6px;">
+                + Add New
+            </button>
+
+            <div>
+                <button style="padding:8px 14px; background:#186018; opacity:0.8; color:white;">Edit</button>
+                <button style="padding:8px 14px; background:#186018; opacity:0.8; color:white;">Delete</button>
+            </div>
+        </div>
+
+        <table style="width:100%; border-collapse:collapse; background:white;">
+            <thead style="background:#186018; color:white;">
+                <tr>
+                    <th></th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox" /></td>
+                    <td>01/01/2026</td>
+                    <td>Mobil</td>
+                    <td>$31.47</td>
+                    <td>Gas</td>
+                    <td>NYC trip</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
