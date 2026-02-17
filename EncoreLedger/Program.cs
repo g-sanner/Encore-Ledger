@@ -1,23 +1,20 @@
-using Microsoft.Data.Sqlite;
+using EncoreLedger.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = "Data Source=EncoreLedger.db";
-
-// Add MVC service
+// Add MVC and SQLite services
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite("Data Source=EncoreLedger.db"));
 
 var app = builder.Build();
 
-// Initialize schema
-using (var connection = new SqliteConnection(connectionString))
+// Automatically apply migrations (creates database if missing)
+using (var scope = app.Services.CreateScope())
 {
-    connection.Open();
-
-    var command = connection.CreateCommand();
-    var sql = File.ReadAllText("Sql/init.sql");
-    command.CommandText = sql;
-    command.ExecuteNonQuery();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
 }
 
 // Configure middleware
