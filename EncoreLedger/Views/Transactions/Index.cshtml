@@ -1,3 +1,6 @@
+@model EncoreLedger.Models.ViewModels.TransactionIndexViewModel
+
+
 @{
     ViewData["Title"] = "Transaction Dashboard";
 }
@@ -20,30 +23,29 @@
             <h3>Filter Table</h3>
 
             <p>
-                <input type="checkbox" />
+                <input type="checkbox" id="displayAccountName" @(Model.DisplayAccountName ? "checked" : "") />
                 Display Account Name
             </p>
 
-            <p><strong>Filter on...</strong></p>
+            <p><strong>Sort on...</strong></p>
 
-            <select class="full-width">
-                <option>Date</option>
-                <option>Category</option>
-                <option>Amount</option>
+            <select id="sortColumn" class="full-width">
+                <option value="Date">Date</option>
+                <option value="Category">Category</option>
+                <option value="Amount">Amount</option>
             </select>
 
             <p class="mt-small">
-                <input type="checkbox" checked />
+                <input type="checkbox" id="ascending" @(Model.Ascending ? "checked" : "") />
                 Ascending
             </p>
         </div>
-
     </div>
 
     <div class="main-content">
 
         <div class="table-actions">
-            <button class="btn-primary">+ Add New</button>
+            <a asp-action="Create" class="btn-primary">+ Add New</a>
 
             <div class="action-group">
                 <button class="btn-primary">Edit</button>
@@ -51,28 +53,28 @@
             </div>
         </div>
 
-        <table class="ledger-table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>Category</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><input type="checkbox" /></td>
-                    <td>01/01/2026</td>
-                    <td>Mobil</td>
-                    <td>$31.47</td>
-                    <td>Gas</td>
-                    <td>NYC trip</td>
-                </tr>
-            </tbody>
-        </table>
+        <div id="transactionTable">
+            @await Html.PartialAsync("_TransactionTable", Model)
+        </div>
 
     </div>
 </div>
+
+<script>
+    function loadTransactions() {
+
+        const displayAccountName = document.getElementById("displayAccountName").checked;
+        const sortColumn = document.getElementById("sortColumn").value;
+        const ascending = document.getElementById("ascending").checked;
+
+        fetch(`/Transactions/Filter?displayAccountName=${displayAccountName}&sortColumn=${sortColumn}&ascending=${ascending}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById("transactionTable").innerHTML = html;
+            });
+    }
+
+    document.getElementById("displayAccountName").addEventListener("change", loadTransactions);
+    document.getElementById("sortColumn").addEventListener("change", loadTransactions);
+    document.getElementById("ascending").addEventListener("change", loadTransactions);
+</script>

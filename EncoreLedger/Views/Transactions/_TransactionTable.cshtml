@@ -1,0 +1,39 @@
+@model EncoreLedger.Models.ViewModels.TransactionIndexViewModel
+
+<table class="ledger-table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Category</th>
+
+            @if (Model.DisplayAccountName)
+            {
+                <th>Account</th>
+            }
+
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in Model.Transactions)
+        {
+            <tr>
+                <td><input type="checkbox" /></td>
+                <td>@transaction.TransactionDate.ToString("MM/dd/yyyy")</td>
+                <td>@transaction.Description</td>
+                <td>@transaction.Amount.ToString("C")</td>
+                <td>@transaction.Category?.Name</td>
+
+                @if (Model.DisplayAccountName)
+                {
+                    <td>@transaction.Account?.AccountType</td>
+                }
+
+                <td>@transaction.Notes</td>
+            </tr>
+        }
+    </tbody>
+</table>

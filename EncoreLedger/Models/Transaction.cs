@@ -12,13 +12,13 @@ namespace EncoreLedger.Models
         public DateTime DateCreated { get; set; }
         public DateTime DateEdited { get; set; }
 
-        public int CategoryID { get; set; }
+        public int? CategoryID { get; set; }
         public Category? Category { get; set; }
 
-        public int AccountID { get; set; }
+        public int? AccountID { get; set; }
         public Account? Account { get; set; }
 
-        public int BulkImportID { get; set; }
+        public int? BulkImportID { get; set; }
         public BulkImport? BulkImport { get; set; }
     }
 }

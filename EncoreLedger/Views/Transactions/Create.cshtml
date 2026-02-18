@@ -6,6 +6,16 @@
 <form asp-action="Create" method="post">
     @await Html.PartialAsync(partialViewName: "_CreateEdit", Model)
 
+    <div>
+        <label>Account</label>
+        <select asp-for="AccountID" asp-items="ViewBag.Accounts"></select>
+    </div>
+
+    <div class="full-width">
+        <label>Notes</label>
+        <textarea asp-for="Notes"></textarea>
+    </div>
+
     <div class="form-actions">
         <button type="submit" class="btn-primary">+ Add</button>
     </div>

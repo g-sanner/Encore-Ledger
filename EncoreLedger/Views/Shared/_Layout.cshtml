@@ -1,3 +1,7 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +16,11 @@
         <h2 style="color: #F4F1E8"> Encore Ledger </h2>
 
         <div class="nav-links">
-            <a asp-controller="Transactions" asp-action="Index">Transactions</a>
+            <a asp-controller="Transactions" asp-action="Index"
+                   class="btn btn-outline-primary @(currentController == "Transactions" ? "active" : "")">
+                Transactions
+            </a>
+
             <a asp-controller="Categories" asp-action="Index">Categories</a>
             <a asp-controller="Accounts" asp-action="Index">Accounts</a>
             <a asp-controller="Reports" asp-action="Index">Reports</a>
