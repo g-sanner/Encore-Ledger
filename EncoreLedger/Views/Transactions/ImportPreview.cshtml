@@ -1,0 +1,72 @@
+@model EncoreLedger.Models.ViewModels.ImportPreviewViewModel
+
+<form asp-action="ConfirmImport" method="post">
+    <input type="hidden" asp-for="AccountID" />
+    <input type="hidden" asp-for="SerializedRows" />
+    <input type="hidden" asp-for="FileName" />
+
+    <div>
+        <h4>Column Mapping Guide</h4>
+        <p><strong>Date</strong> - The date the transaction occurred. Required.</p>
+        <p><strong>Description</strong> - A short text describing the transaction. Required.</p>
+        <p><strong>Amount</strong> - The full transaction amount if your file uses a single amount column.</p>
+        <p><strong>Debit</strong> - The debit value (money out) if your file separates debit and credit.</p>
+        <p><strong>Credit</strong> - The credit value (money in) if your file separates debit and credit.</p>
+        <p><strong>Ignore</strong> - Skip this column.</p>
+    </div>
+
+
+    <div>
+        <label class="form-label">Pending Transactions:</label>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" asp-for="PendingHandling" value="Skip" checked />
+            <label class="form-check-label">
+                Skip pending transactions
+            </label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" asp-for="PendingHandling" value="UseToday" />
+            <label class="form-check-label">
+                Import pending transactions using today's date
+            </label>
+        </div>
+    </div>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                @for (int i = 0; i < Model.Headers.Count; i++)
+                {
+                    <th>
+                        <select name="ColumnMappings[@i]" class="form-select">
+                            <option value="">Ignore</option>
+                            <option value="Date">Date</option>
+                            <option value="Description">Description</option>
+                            <option value="Amount">Amount</option>
+                            <option value="Debit">Debit</option>
+                            <option value="Credit">Credit</option>
+                        </select>
+                        <br />
+                        @Model.Headers[i]
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.PreviewRows)
+            {
+                <tr>
+                    @foreach (var cell in row)
+                    {
+                        <td>@cell</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Confirm Import</button>
+</form>

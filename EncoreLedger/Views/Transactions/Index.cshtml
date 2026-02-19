@@ -1,6 +1,5 @@
 @model EncoreLedger.Models.ViewModels.TransactionIndexViewModel
 
-
 @{
     ViewData["Title"] = "Transaction Dashboard";
 }
@@ -8,6 +7,11 @@
 <link rel="stylesheet" href="~/css/dashboard.css" />
 
 <h1 class="page-title">Transaction Dashboard</h1>
+
+@if (TempData["ImportMessage"] != null)
+{
+    <div>@TempData["ImportMessage"]</div>
+}
 
 <div class="dashboard-container">
 

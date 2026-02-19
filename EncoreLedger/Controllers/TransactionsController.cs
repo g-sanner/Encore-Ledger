@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EncoreLedger.Models.ViewModels;
+using System.Globalization;
+using CsvHelper;
+using CsvHelper.Configuration;
+using System.Text.Json;
+
 
 namespace EncoreLedger.Controllers
 {
@@ -87,6 +92,7 @@ namespace EncoreLedger.Controllers
                 "ID", "Name"
             );
         }
+
         public async Task<IActionResult> Filter(
             bool displayAccountName,
             string sortColumn,
@@ -121,6 +127,262 @@ namespace EncoreLedger.Controllers
             };
 
             return PartialView("_TransactionTable", vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Import(IFormFile file, int accountId)
+        {
+            // Reject empty uploads
+            // TODO: Check error code
+            if (file == null || file.Length == 0)
+                return View();
+
+            /* Configure CSV parsing 
+                1. No header row -- attempted to configure with a header row
+                                    but concluded that with all the different
+                                    ways banks format CSV files, this was simpler.
+                2. Ignore blank lines
+                3. Trim whitespace
+            */
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = false,
+                IgnoreBlankLines = true,
+                TrimOptions = TrimOptions.Trim
+            };
+
+            var rows = new List<string[]>();
+
+            // Read all rows from the uploaded CSV
+            using var reader = new StreamReader(file.OpenReadStream());
+            using var csv = new CsvReader(reader, config);
+
+            while (await csv.ReadAsync())
+            {
+                rows.Add(csv.Context.Parser.Record);
+            }
+
+            // Need at least one row of data, plus the metadata row
+            //      most banks have.
+            if (rows.Count < 2)
+                return View("Import");
+
+            var headers = rows[0].ToList();
+
+            // Show only a small preview of the data to the user
+            var previewRows = rows.Skip(1).Take(5).ToList();
+
+            var vm = new ImportPreviewViewModel
+            {
+                AccountID = accountId,
+                Headers = headers,
+                PreviewRows = previewRows,
+                SerializedRows = JsonSerializer.Serialize(rows),
+                FileName = file.FileName
+            };
+
+            return View("ImportPreview", vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmImport(ImportPreviewViewModel model)
+        {
+            // Get necessary information from preview
+            var accountID = model.AccountID;
+            var serializedRows = model.SerializedRows;
+            var pendingHandling = model.PendingHandling;
+            var columnMappings = model.ColumnMappings;
+
+            var rows = JsonSerializer.Deserialize<List<string[]>>(serializedRows);
+
+            if (rows == null || rows.Count < 2)
+                return RedirectToAction("Index");
+
+            // Use user input to determine 
+            // which CSV column maps to which field
+            int? dateIndex = null;
+            int? descIndex = null;
+            int? amountIndex = null;
+            int? debitIndex = null;
+            int? creditIndex = null;
+
+            foreach (var mapping in columnMappings)
+            {
+                switch (mapping.Value)
+                {
+                    case "Date":
+                        dateIndex = mapping.Key; 
+                        break;
+                    case "Description": 
+                        descIndex = mapping.Key; 
+                        break;
+                    case "Amount": 
+                        amountIndex = mapping.Key; 
+                        break;
+                    case "Debit": 
+                        debitIndex = mapping.Key; 
+                        break;
+                    case "Credit": 
+                        creditIndex = mapping.Key; 
+                        break;
+                }
+            }
+
+            // Initialize the bulk import record
+            var bulkImport = new BulkImport
+            {
+                FileName = model.FileName,
+                ImportDate = DateTime.Now,
+                TotalRecords = 0,
+                RecordsImported = 0,
+                RecordsFailed = 0,
+                RecordsIgnored = 0,
+                Transactions = new List<Transaction>()
+            };
+
+            // Process each data row (skip header)
+            foreach (var row in rows.Skip(1))
+            {
+                // Tracks number of records in import file
+                bulkImport.TotalRecords++;
+
+                /* 
+                   Cannot import without at least a date and a description
+                   NOTE: Amount is also a required field, but many bank CSV files
+                         use 'debit' and 'credit' fields to track positive and
+                         negative values respectively, so "Amount" may not 
+                         technically be indexed to.
+                */
+                if (!dateIndex.HasValue || !descIndex.HasValue)
+                {
+                    bulkImport.RecordsFailed++;
+                    continue;
+                }
+
+                // Parse transaction date
+                if (!DateTime.TryParse(row[dateIndex.Value], out var date))
+                {
+                    // Handle pending transactions according to user preference
+                    // TODO: check how other banks store pending transactions
+                    //        in their CSV files.
+                    if (row[dateIndex.Value].Equals("pending", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (pendingHandling == "UseToday")
+                        {
+                            date = DateTime.Today;
+                        }
+                        else
+                        {
+                            bulkImport.RecordsIgnored++;
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        bulkImport.RecordsFailed++;
+                        continue;
+                    }
+                }
+
+                /* 
+                   Parse transaction amount
+                   First, check and see if "Amount" is indexed to. If
+                     not, use "Credit"/"Debit" indexes to determine
+                     Amount variable
+                */
+                decimal amount = 0;
+                bool amountParsed = false;
+
+                if (amountIndex.HasValue)
+                {
+                    // Single-column amount (may include parentheses for negatives)
+                    var rawAmount = row[amountIndex.Value];
+
+                    // Detect accounting-style negatives: (123.45)
+                    bool isNegative = rawAmount.Contains("(") && rawAmount.Contains(")");
+
+                    // Get just the number amount.
+                    var cleaned = rawAmount
+                        .Replace("$", "")
+                        .Replace(",", "")
+                        .Replace(" ", "")
+                        .Replace("(", "")
+                        .Replace(")", "");
+
+                    amountParsed = decimal.TryParse(
+                        cleaned,
+                        NumberStyles.Any,
+                        CultureInfo.InvariantCulture,
+                        out amount);
+
+                    if (isNegative)
+                        amount *= -1;
+                }
+                else
+                {
+                    // Debit/credit style import
+                    decimal debit = 0, credit = 0;
+
+                    bool debitParsed = debitIndex.HasValue &&
+                        decimal.TryParse(
+                            row[debitIndex.Value]
+                            .Replace("$", "")
+                            .Replace(",", "")
+                            .Replace(" ", ""),
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out debit);
+
+                    bool creditParsed = creditIndex.HasValue &&
+                        decimal.TryParse(
+                            row[creditIndex.Value]
+                            .Replace("$", "")
+                            .Replace(",", "")
+                            .Replace(" ", ""),
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out credit);
+
+                    amount = credit - debit;
+                    amountParsed = debitParsed || creditParsed;
+                }
+
+                if (!amountParsed)
+                {
+                    bulkImport.RecordsFailed++;
+                    continue;
+                }
+
+                Console.WriteLine($"RAW AMOUNT: '{row[amountIndex.Value]}'");
+
+                // Build the transaction entity
+                var transaction = new Transaction
+                {
+                    TransactionDate = date,
+                    Description = row[descIndex.Value],
+                    Amount = amount,
+                    AccountID = null,
+                    // AccountID = accountID,s
+                    BulkImport = bulkImport,
+                    DateCreated = DateTime.Now,
+                    DateEdited = DateTime.Now
+                };
+
+                bulkImport.Transactions.Add(transaction);
+                bulkImport.RecordsImported++;
+            }
+
+            // Save the import and all transactions
+            _context.BulkImports.Add(bulkImport);
+            await _context.SaveChangesAsync();
+
+            // Provide user feedback
+            // TODO: match error message to existing aesthetic
+            TempData["ImportMessage"] =
+                $"{bulkImport.RecordsImported} imported, {bulkImport.RecordsFailed} failed, " +
+                $"{bulkImport.RecordsIgnored} ignored.";
+
+            return RedirectToAction("Index");
         }
 
     }

@@ -8,6 +8,7 @@ namespace EncoreLedger.Models
         public int? TotalRecords { get; set; }
         public int? RecordsImported { get; set; }
         public int? RecordsFailed { get; set; }
+        public int? RecordsIgnored { get; set; }
 
         public ICollection<Transaction>? Transactions { get; set; }
     }

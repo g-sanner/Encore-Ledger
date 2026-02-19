@@ -20,3 +20,23 @@
         <button type="submit" class="btn-primary">+ Add</button>
     </div>
 </form>
+
+<hr />
+
+<h2>Import CSV File</h2>
+
+<form asp-action="Import" method="post" enctype="multipart/form-data">
+
+    <div>
+        <label>Account</label>
+        <select name="accountId" asp-items="ViewBag.Accounts"></select>
+    </div>
+
+    <div>
+        <input type="file" name="file" accept=".csv" />
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-primary">Import</button>
+    </div>
+</form>
