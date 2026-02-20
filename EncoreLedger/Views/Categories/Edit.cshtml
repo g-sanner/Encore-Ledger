@@ -1,0 +1,30 @@
+@using EncoreLedger.Models
+@model Category
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+<link rel="stylesheet" href="~/css/forms.css" />
+
+<h1 class="page-title">Edit Category #@Model.IDCategory</h1>
+
+<div class="form-card">
+
+    <div class="form-grid">
+
+        <div>
+            <label>Name</label>
+            <input asp-for="Name" />
+        </div>
+
+        <div>
+            <label>Description</label>
+            <input asp-for="Description" />
+        </div>
+
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:15px; margin-top:20px;">
+        <button class="btn-primary">Save</button>
+        <button class="btn-primary">Delete</button>
+    </div>
+
+</div>

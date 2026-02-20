@@ -1,42 +1,63 @@
 @using EncoreLedger.Models
 @model Transaction
 
-<h1>Create Transaction</h1>
+<link rel="stylesheet" href="~/css/dashboard.css" />
+<link rel="stylesheet" href="~/css/forms.css" />
+
+<h1 class="page-title">Create Transaction</h1>
 
 <form asp-action="Create" method="post">
-    @await Html.PartialAsync(partialViewName: "_CreateEdit", Model)
 
-    <div>
-        <label>Account</label>
-        <select asp-for="AccountID" asp-items="ViewBag.Accounts"></select>
-    </div>
+    <div class="form-card">
 
-    <div class="full-width">
-        <label>Notes</label>
-        <textarea asp-for="Notes"></textarea>
-    </div>
+        <div class="form-grid">
+            @await Html.PartialAsync("_CreateEdit", Model)
 
-    <div class="form-actions">
-        <button type="submit" class="btn-primary">+ Add</button>
+            <div>
+                <label>Account</label>
+                <select asp-for="AccountID" asp-items="ViewBag.Accounts"></select>
+            </div>
+
+            <div class="full-width">
+                <label>Notes</label>
+                <textarea asp-for="Notes"></textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">+ Add</button>
+        </div>
+
     </div>
 </form>
 
-<hr />
+
+<hr style="margin:40px 0;" />
+
 
 <h2>Import CSV File</h2>
 
 <form asp-action="Import" method="post" enctype="multipart/form-data">
 
-    <div>
-        <label>Account</label>
-        <select name="accountId" asp-items="ViewBag.Accounts"></select>
-    </div>
+    <div class="form-card">
 
-    <div>
-        <input type="file" name="file" accept=".csv" />
-    </div>
+        <div class="form-grid">
 
-    <div class="form-actions">
-        <button type="submit" class="btn-primary">Import</button>
+            <div>
+                <label>Account</label>
+                <select name="accountId" asp-items="ViewBag.Accounts"></select>
+            </div>
+
+            <div>
+                <label>CSV File</label>
+                <input type="file" name="file" accept=".csv" />
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Import</button>
+        </div>
+
     </div>
 </form>

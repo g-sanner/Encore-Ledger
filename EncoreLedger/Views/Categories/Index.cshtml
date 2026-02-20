@@ -1,0 +1,79 @@
+@{
+    ViewData["Title"] = "Category Manager";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<h1 class="page-title">Category Manager</h1>
+
+<div class="dashboard-container">
+
+    <div class="sidebar">
+
+        <div class="card">
+            <h3>Add New Category</h3>
+
+            <div>
+                <label><strong>Name</strong></label><br />
+                <input type="text" class="full-width" placeholder="Value" />
+            </div>
+
+            <div>
+                <label><strong>Description</strong></label><br />
+                <input type="text" class="full-width" placeholder="Value" />
+            </div>
+
+            <div>
+                <button class="btn-primary">+ Add</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="main-content">
+
+        <div class="table-actions">
+            <div></div> 
+
+            <div class="action-group">
+                <button class="btn-primary">Edit</button>
+                <button class="btn-primary">Delete</button>
+            </div>
+        </div>
+
+        <table class="ledger-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td><input type="checkbox" /></td>
+                    <td>Gas</td>
+                    <td>Buying fuel on trips</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" /></td>
+                    <td>Rent</td>
+                    <td>123 Street St — monthly expense</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" /></td>
+                    <td>Groceries</td>
+                    <td>Every Friday</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" /></td>
+                    <td>Utilities</td>
+                    <td>Electricity and water bill paid monthly</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>

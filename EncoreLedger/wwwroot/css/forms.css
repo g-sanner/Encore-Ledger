@@ -1,0 +1,22 @@
+.form-card {
+    background: #D8CDB4;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #C8BDA5;
+    max-width: 1000px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.form-card input,
+.form-card select,
+.form-card textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #BFB6A1;
+}
