@@ -1,3 +1,5 @@
+@model IEnumerable<EncoreLedger.Models.Category>
+
 @{
     ViewData["Title"] = "Category Manager";
 }
@@ -9,71 +11,83 @@
 <div class="dashboard-container">
 
     <div class="sidebar">
-
         <div class="card">
             <h3>Add New Category</h3>
+            <form asp-action="Create" method="post">
 
-            <div>
-                <label><strong>Name</strong></label><br />
-                <input type="text" class="full-width" placeholder="Value" />
-            </div>
+                <div>
+                    <label><strong>Name</strong></label><br />
+                    <input type="text" name="Name" class="full-width" required />
+                </div>
 
-            <div>
-                <label><strong>Description</strong></label><br />
-                <input type="text" class="full-width" placeholder="Value" />
-            </div>
+                <div>
+                    <label><strong>Description</strong></label><br />
+                    <input type="text" name="Description" class="full-width" />
+                </div>
 
-            <div>
-                <button class="btn-primary">+ Add</button>
-            </div>
+                <div>
+                    <button type="submit" class="btn-primary">+ Add</button>
+                </div>
+
+            </form>
         </div>
-
     </div>
 
     <div class="main-content">
 
-        <div class="table-actions">
-            <div></div> 
+        <form method="post">
 
-            <div class="action-group">
-                <button class="btn-primary">Edit</button>
-                <button class="btn-primary">Delete</button>
+            <div class="table-actions">
+                <div></div>
+
+                <div class="action-group">
+                    <button type="button" class="btn-primary" onclick="editSelected()">
+                        Edit
+                    </button>
+
+                    <button type="submit" formaction="@Url.Action("Delete")" class="btn-primary"
+                            onclick="return confirm('Are you sure you want to delete this category?');">
+                        Delete
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <table class="ledger-table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
+            <table class="ledger-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <tr>
-                    <td><input type="checkbox" /></td>
-                    <td>Gas</td>
-                    <td>Buying fuel on trips</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" /></td>
-                    <td>Rent</td>
-                    <td>123 Street St — monthly expense</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" /></td>
-                    <td>Groceries</td>
-                    <td>Every Friday</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" /></td>
-                    <td>Utilities</td>
-                    <td>Electricity and water bill paid monthly</td>
-                </tr>
-            </tbody>
-        </table>
-
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selectedIds" value="@category.IDCategory" />
+                            </td>
+                            <td>@category.Name</td>
+                            <td>@category.Description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
     </div>
-
 </div>
+
+<script>
+    function editSelected() {
+        const checked = document.querySelectorAll('input[name="selectedIds"]:checked');
+
+        if (checked.length !== 1) {
+            alert("Please select exactly one category to edit.");
+            return;
+        }
+
+        const id = checked[0].value;
+        window.location.href = '/Categories/Edit/' + id;
+    }
+</script>
