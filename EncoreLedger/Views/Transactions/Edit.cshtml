@@ -3,13 +3,29 @@
 
 <h1>Edit Transaction #@Model.IDTransaction</h1>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="IDTransaction" />
+<link rel="stylesheet" href="~/css/dashboard.css" />
+<link rel="stylesheet" href="~/css/forms.css" />
 
-    @await Html.PartialAsync(partialViewName: "_CreateEdit", Model)
+<div class="form-card">
 
-    <div class="form-actions">
-        <button type="submit" class="btn-primary">Save</button>
-        <button type="submit" asp-action="Delete" class="btn-danger">Delete</button>
-    </div>
-</form>
+    <form method="post">
+
+        <input type="hidden" asp-for="IDTransaction" />
+
+        <div class="form-grid">
+            @await Html.PartialAsync("_CreateEdit", Model)
+
+            <div class="full-width">
+                <label>Notes</label>
+                <textarea asp-for="Notes"></textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Save</button>
+            <button type="submit" asp-action="Delete" class="btn-primary">Delete</button>
+        </div>
+
+    </form>
+
+</div>

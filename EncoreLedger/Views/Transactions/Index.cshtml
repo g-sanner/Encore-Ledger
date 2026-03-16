@@ -48,18 +48,28 @@
 
     <div class="main-content">
 
-        <div class="table-actions">
-            <a asp-action="Create" class="btn-primary">+ Add New</a>
+        <form method="post">
 
-            <div class="action-group">
-                <button class="btn-primary">Edit</button>
-                <button class="btn-primary">Delete</button>
+            <div class="table-actions">
+                <a asp-action="Create" class="btn-primary">+ Add New</a>
+
+                <div class="action-group">
+                    <button type="button" class="btn-primary" onclick="editSelected()">
+                        Edit
+                    </button>
+
+                    <button type="submit" formaction="@Url.Action("Delete")" class="btn-primary"
+                            onclick="return confirm('Are you sure you want to delete this transaction?');">
+                        Delete
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <div id="transactionTable">
-            @await Html.PartialAsync("_TransactionTable", Model)
-        </div>
+            <div id="transactionTable">
+                @await Html.PartialAsync("_TransactionTable", Model)
+            </div>
+
+        </form>
 
     </div>
 </div>
@@ -81,4 +91,16 @@
     document.getElementById("displayAccountName").addEventListener("change", loadTransactions);
     document.getElementById("sortColumn").addEventListener("change", loadTransactions);
     document.getElementById("ascending").addEventListener("change", loadTransactions);
+
+    function editSelected() {
+        const checked = document.querySelectorAll('input[name="selectedIds"]:checked');
+
+        if (checked.length !== 1) {
+            alert("Please select exactly one transaction to edit.");
+            return;
+        }
+
+        const id = checked[0].value;
+        window.location.href = '/Transactions/Edit/' + id;
+    }
 </script>

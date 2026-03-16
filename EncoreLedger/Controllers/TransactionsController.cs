@@ -58,7 +58,6 @@ namespace EncoreLedger.Controllers
             return View(vm);
         }
 
-
         public IActionResult Create()
         {
             LoadDropdowns();
@@ -84,14 +83,75 @@ namespace EncoreLedger.Controllers
         {
             ViewBag.Accounts = new SelectList(
                 _context.Accounts.ToList(),
-                "ID", "Name"
+                "IDAccount", 
+                "Name"
             );
 
             ViewBag.Categories = new SelectList(
                 _context.Categories.ToList(),
-                "ID", "Name"
+                "IDCategory", 
+                "Name"
             );
+
         }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var transaction = await _context.Transactions
+                .FirstOrDefaultAsync(t => t.IDTransaction == id);
+
+            if (transaction == null)
+                return NotFound();
+
+            LoadDropdowns();
+            return View(transaction);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, Transaction transaction)
+        {
+            if (id != transaction.IDTransaction)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+            {
+                LoadDropdowns();
+                return View(transaction);
+            }
+
+            try
+            {
+                _context.Update(transaction);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Transactions.Any(t => t.IDTransaction == id))
+                    return NotFound();
+
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int[] selectedIds)
+        {
+            if (selectedIds != null && selectedIds.Length > 0)
+            {
+                var transactions = _context.Transactions
+                    .Where(t => selectedIds.Contains(t.IDTransaction))
+                    .ToList();
+
+                _context.Transactions.RemoveRange(transactions);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         public async Task<IActionResult> Filter(
             bool displayAccountName,
@@ -211,19 +271,19 @@ namespace EncoreLedger.Controllers
                 switch (mapping.Value)
                 {
                     case "Date":
-                        dateIndex = mapping.Key; 
+                        dateIndex = mapping.Key;
                         break;
-                    case "Description": 
-                        descIndex = mapping.Key; 
+                    case "Description":
+                        descIndex = mapping.Key;
                         break;
-                    case "Amount": 
-                        amountIndex = mapping.Key; 
+                    case "Amount":
+                        amountIndex = mapping.Key;
                         break;
-                    case "Debit": 
-                        debitIndex = mapping.Key; 
+                    case "Debit":
+                        debitIndex = mapping.Key;
                         break;
-                    case "Credit": 
-                        creditIndex = mapping.Key; 
+                    case "Credit":
+                        creditIndex = mapping.Key;
                         break;
                 }
             }

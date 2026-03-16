@@ -21,7 +21,9 @@
         @foreach (var transaction in Model.Transactions)
         {
             <tr>
-                <td><input type="checkbox" /></td>
+                <td>
+                    <input type="checkbox" name="selectedIds" value="@transaction.IDTransaction" />
+                </td>
                 <td>@transaction.TransactionDate.ToString("MM/dd/yyyy")</td>
                 <td>@transaction.Description</td>
                 <td>@transaction.Amount.ToString("C")</td>
