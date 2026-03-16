@@ -83,13 +83,13 @@ namespace EncoreLedger.Controllers
         {
             ViewBag.Accounts = new SelectList(
                 _context.Accounts.ToList(),
-                "IDAccount", 
+                "IDAccount",
                 "Name"
             );
 
             ViewBag.Categories = new SelectList(
                 _context.Categories.ToList(),
-                "IDCategory", 
+                "IDCategory",
                 "Name"
             );
 
@@ -137,7 +137,24 @@ namespace EncoreLedger.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int[] selectedIds)
+        public IActionResult Delete(int id)
+        {
+            var transaction = _context.Transactions
+                .FirstOrDefault(t => t.IDTransaction == id);
+
+            if (transaction == null)
+                return NotFound();
+
+            _context.Transactions.Remove(transaction);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SelectDelete(int[] selectedIds)
         {
             if (selectedIds != null && selectedIds.Length > 0)
             {

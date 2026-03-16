@@ -1,6 +1,10 @@
 @using EncoreLedger.Models
 @model Transaction
 
+@{
+    ViewData["Title"] = "Edit Transaction #" + Model.IDTransaction;
+}
+
 <h1>Edit Transaction #@Model.IDTransaction</h1>
 
 <link rel="stylesheet" href="~/css/dashboard.css" />
@@ -23,7 +27,10 @@
 
         <div class="form-actions">
             <button type="submit" class="btn-primary">Save</button>
-            <button type="submit" asp-action="Delete" class="btn-primary">Delete</button>
+            <button type="submit" formaction="@Url.Action("Delete", new { id = Model.IDTransaction })" 
+                    class="btn-primary" onclick="return confirm('Are you sure you want to delete this transaction?');">
+                Delete
+            </button>
         </div>
 
     </form>
