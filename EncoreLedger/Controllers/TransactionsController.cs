@@ -55,6 +55,10 @@ namespace EncoreLedger.Controllers
                 Ascending = ascending
             };
 
+            // Added for bulk edit modal window
+            ViewBag.Categories = new SelectList(_context.Categories, "IDCategory", "Name");
+            ViewBag.Accounts = new SelectList(_context.Accounts, "IDAccount", "Name");
+
             return View(vm);
         }
 
@@ -460,6 +464,40 @@ namespace EncoreLedger.Controllers
                 $"{bulkImport.RecordsIgnored} ignored.";
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BulkEdit(BulkEditViewModel model)
+        {
+            if (model.SelectedIds == null || model.SelectedIds.Length == 0)
+                return RedirectToAction(nameof(Index));
+
+            var transactions = await _context.Transactions
+                .Where(t => model.SelectedIds.Contains(t.IDTransaction))
+                .ToListAsync();
+
+            foreach (var t in transactions)
+            {
+                // Only update fields that have values provided
+                if (model.CategoryId.HasValue)
+                    t.CategoryID = model.CategoryId;
+
+                if (model.AccountId.HasValue)
+                    t.AccountID = model.AccountId;
+
+                if (!string.IsNullOrWhiteSpace(model.Description))
+                    t.Description = model.Description;
+
+                if (!string.IsNullOrWhiteSpace(model.Notes))
+                    t.Notes = model.Notes;
+
+                t.DateEdited = DateTime.Now;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
     }

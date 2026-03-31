@@ -40,17 +40,29 @@
 
 /* Buttons */
 
-.btn-primary {
+.btn-primary,
+.btn-secondary {
     padding: 8px 14px;
-    background: #2E5A3F;
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
 }
 
+.btn-primary {
+    background: #2E5A3F;
+}
+
 .btn-primary:hover {
     background: #1F3D2B;
+}
+
+.btn-secondary {
+    background: #8B8B8B;
+}
+
+.btn-secondary:hover {
+    background: #6B6B6B;
 }
 
 /* Table */
@@ -86,4 +98,82 @@
 
 .ledger-table tbody tr:nth-child(even) {
     background: #F3EFE4;
+}
+
+/* Modal */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-window {
+    background: #D8CDB4;
+    padding: 0;
+    width: 500px;
+    border-radius: 8px;
+    border: 1px solid #C8BDA5;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+.modal-window > div {
+    padding: 20px;
+}
+
+.modal-window input[type="checkbox"],
+.modal-window input[type="text"],
+.modal-window select,
+.modal-window textarea {
+    font-family: "Georgia", serif;
+    color: #2B2A28;
+    font-size: 14px;
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #BFB6A1;
+    border-radius: 4px;
+    background: white;
+}
+
+.modal-window label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.modal-window input[type="text"] {
+    display: block;
+    width: 95%;
+}
+
+.modal-window select {
+    width: 48%;
+}
+
+.modal-window textarea {
+    display: block;
+    width: 95%;
+    height: 80px;
+    resize: vertical;
+}
+
+.modal-window > div:first-child {
+    background: #1F3D2B;
+    color: white;
+    padding: 15px 20px;
+    border-bottom: 1px solid #C8BDA5;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
 }
