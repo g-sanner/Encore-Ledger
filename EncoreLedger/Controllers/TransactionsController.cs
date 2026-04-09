@@ -268,13 +268,20 @@ namespace EncoreLedger.Controllers
             // Show only a small preview of the data to the user
             var previewRows = rows.Skip(1).Take(5).ToList();
 
+            // Load saved mappings for this account (and global mappings with no account)
+            var savedMappings = await _context.ImportMappings
+                .Where(m => m.AccountID == accountId || m.AccountID == null)
+                .OrderByDescending(m => m.DateModified)
+                .ToListAsync();
+
             var vm = new ImportPreviewViewModel
             {
                 AccountID = accountId,
                 Headers = headers,
                 PreviewRows = previewRows,
                 SerializedRows = JsonSerializer.Serialize(rows),
-                FileName = file.FileName
+                FileName = file.FileName,
+                SavedMappings = savedMappings
             };
 
             return View("ImportPreview", vm);
@@ -283,6 +290,29 @@ namespace EncoreLedger.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmImport(ImportPreviewViewModel model)
         {
+            // If a saved mapping was selected, load it and apply it
+            if (model.SelectedMappingID.HasValue && model.SelectedMappingID.Value > 0)
+            {
+                var selectedMapping = await _context.ImportMappings
+                    .FirstOrDefaultAsync(m => m.IDImportMapping == model.SelectedMappingID.Value);
+
+                if (selectedMapping != null)
+                {
+                    // Apply the saved mapping to ColumnMappings
+                    model.ColumnMappings.Clear();
+                    if (selectedMapping.DateIndex.HasValue)
+                        model.ColumnMappings[selectedMapping.DateIndex.Value] = "Date";
+                    if (selectedMapping.DescriptionIndex.HasValue)
+                        model.ColumnMappings[selectedMapping.DescriptionIndex.Value] = "Description";
+                    if (selectedMapping.AmountIndex.HasValue)
+                        model.ColumnMappings[selectedMapping.AmountIndex.Value] = "Amount";
+                    if (selectedMapping.DebitIndex.HasValue)
+                        model.ColumnMappings[selectedMapping.DebitIndex.Value] = "Debit";
+                    if (selectedMapping.CreditIndex.HasValue)
+                        model.ColumnMappings[selectedMapping.CreditIndex.Value] = "Credit";
+                }
+            }
+
             // Get necessary information from preview
             var accountID = model.AccountID;
             var serializedRows = model.SerializedRows;
@@ -471,6 +501,26 @@ namespace EncoreLedger.Controllers
             // Save the import and all transactions
             _context.BulkImports.Add(bulkImport);
             await _context.SaveChangesAsync();
+
+            // Save the mapping pattern if requested
+            if (model.SaveMapping && !string.IsNullOrWhiteSpace(model.SaveMappingName))
+            {
+                var importMapping = new ImportMapping
+                {
+                    Name = model.SaveMappingName.Trim(),
+                    AccountID = accountID > 0 ? accountID : null,
+                    DateIndex = dateIndex,
+                    DescriptionIndex = descIndex,
+                    AmountIndex = amountIndex,
+                    DebitIndex = debitIndex,
+                    CreditIndex = creditIndex,
+                    DateCreated = DateTime.Now,
+                    DateModified = DateTime.Now
+                };
+
+                _context.ImportMappings.Add(importMapping);
+                await _context.SaveChangesAsync();
+            }
 
             // Provide user feedback
             // TODO: match error message to existing aesthetic

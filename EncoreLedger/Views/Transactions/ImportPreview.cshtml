@@ -1,12 +1,21 @@
 @model EncoreLedger.Models.ViewModels.ImportPreviewViewModel
 
-<form asp-action="ConfirmImport" method="post">
+@{
+    ViewData["Title"] = "CSV Import Preview";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<form asp-action="ConfirmImport" method="post" id="importForm">
     <input type="hidden" asp-for="AccountID" />
     <input type="hidden" asp-for="SerializedRows" />
     <input type="hidden" asp-for="FileName" />
+    <input type="hidden" asp-for="SelectedMappingID" />
 
-    <div>
-        <h4>Column Mapping Guide</h4>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Column Mapping Guide</h4>
+        </div>
         <p><strong>Date</strong> - The date the transaction occurred. Required.</p>
         <p><strong>Description</strong> - A short text describing the transaction. Required.</p>
         <p><strong>Amount</strong> - The full transaction amount if your file uses a single amount column.</p>
@@ -15,6 +24,31 @@
         <p><strong>Ignore</strong> - Skip this column.</p>
     </div>
 
+    <!-- Load Saved Mapping -->
+    @if (Model.SavedMappings.Any())
+    {
+        <div class="card">
+            <div class="card-header">
+                <h5>Load Saved Mapping</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-md-8">
+                        <select id="savedMappingSelect" class="form-select">
+                            <option value="">-- Choose a saved mapping --</option>
+                            @foreach (var mapping in Model.SavedMappings)
+                            {
+                                <option value="@mapping.IDImportMapping">@mapping.Name (saved @mapping.DateModified.ToString("MMM d, yyyy"))</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" id="loadMappingBtn" class="btn btn-info w-100">Load Mapping</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     <div>
         <label class="form-label">Pending Transactions:</label>
@@ -68,5 +102,47 @@
         </tbody>
     </table>
 
+    <!-- Save Current Mapping -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Save This Mapping for Later</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-2">
+                <div class="col-md-8">
+                    <input type="text" 
+                           name="SaveMappingName" 
+                           class="form-control" 
+                           placeholder="e.g., Bank of America, Chase, etc." 
+                           asp-for="SaveMappingName" />
+                    <small class="form-text text-muted">Optional: Give this mapping a name to easily reuse it later</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-check">
+                        <input type="checkbox" name="SaveMapping" class="form-check-input" asp-for="SaveMapping" />
+                        <span class="form-check-label">Save mapping</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <button type="submit" class="btn btn-primary">Confirm Import</button>
 </form>
+
+<script>
+    document.getElementById('loadMappingBtn').addEventListener('click', function () {
+        const mappingId = document.getElementById('savedMappingSelect').value;
+        if (mappingId) {
+            document.getElementById('SelectedMappingID').value = mappingId;
+            document.getElementById('importForm').submit();
+        }
+    });
+
+    // Allow pressing Enter to go back when modal is focused
+    document.getElementById('savedMappingSelect').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            document.getElementById('loadMappingBtn').click();
+        }
+    });
+</script>

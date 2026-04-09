@@ -23,5 +23,11 @@ namespace EncoreLedger.Models.ViewModels
 
         // Raw data stored temporarily
         public string? SerializedRows { get; set; }
+
+        // Import mapping management
+        public List<ImportMapping> SavedMappings { get; set; } = new();
+        public int? SelectedMappingID { get; set; }
+        public string? SaveMappingName { get; set; }
+        public bool SaveMapping { get; set; }
     }
 }
