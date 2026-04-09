@@ -47,12 +47,18 @@ namespace EncoreLedger.Controllers
                     : query.OrderByDescending(t => t.TransactionDate)
             };
 
+            var transactions = await query.ToListAsync();
+
             var vm = new TransactionIndexViewModel
             {
-                Transactions = await query.ToListAsync(),
+                Transactions = transactions,
                 DisplayAccountName = displayAccountName,
                 SortColumn = sortColumn,
-                Ascending = ascending
+                Ascending = ascending,
+                TotalTransactionCount = transactions.Count,
+                LastDateUpdated = transactions.Any()
+                    ? transactions.Max(t => t.DateEdited)
+                    : null
             };
 
             // Added for bulk edit modal window
@@ -77,8 +83,12 @@ namespace EncoreLedger.Controllers
                 return View(transaction);
             }
 
+            transaction.DateCreated = DateTime.Now;
+            transaction.DateEdited = DateTime.Now;
+
             _context.Add(transaction);
             _context.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
@@ -112,29 +122,34 @@ namespace EncoreLedger.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Transaction transaction)
+        public async Task<IActionResult> Edit(int id, Transaction updated)
         {
-            if (id != transaction.IDTransaction)
+            if (id != updated.IDTransaction)
                 return BadRequest();
 
             if (!ModelState.IsValid)
             {
                 LoadDropdowns();
-                return View(transaction);
+                return View(updated);
             }
 
-            try
-            {
-                _context.Update(transaction);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Transactions.Any(t => t.IDTransaction == id))
-                    return NotFound();
+            var existing = await _context.Transactions.FindAsync(id);
 
-                throw;
-            }
+            if (existing == null)
+                return NotFound();
+
+            // Update fields that can be edited
+            existing.Description = updated.Description;
+            existing.Amount = updated.Amount;
+            existing.Notes = updated.Notes;
+            existing.TransactionDate = updated.TransactionDate;
+            existing.CategoryID = updated.CategoryID;
+            existing.AccountID = updated.AccountID;
+
+            // Update the edited timestamp
+            existing.DateEdited = DateTime.Now;
+
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
