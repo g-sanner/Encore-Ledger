@@ -146,22 +146,81 @@
 </div>
 
 <script>
+    const filterIds = ["displayAccountName", "sortColumn", "ascending"];
+
+    function getFilters() {
+        return {
+            displayAccountName: document.getElementById("displayAccountName").checked,
+            sortColumn: document.getElementById("sortColumn").value,
+            ascending: document.getElementById("ascending").checked
+        };
+    }
+
+    function saveFilters(filters) {
+        localStorage.setItem('displayAccountName', filters.displayAccountName);
+        localStorage.setItem('sortColumn', filters.sortColumn);
+        localStorage.setItem('ascending', filters.ascending);
+    }
+
+    function restoreFilters() {
+        const savedDisplayAccount = localStorage.getItem('displayAccountName');
+        const savedSortColumn = localStorage.getItem('sortColumn');
+        const savedAscending = localStorage.getItem('ascending');
+
+        if (savedDisplayAccount !== null) {
+            document.getElementById('displayAccountName').checked = savedDisplayAccount === 'true';
+        }
+        if (savedSortColumn) {
+            document.getElementById('sortColumn').value = savedSortColumn;
+        }
+        if (savedAscending !== null) {
+            document.getElementById('ascending').checked = savedAscending === 'true';
+        }
+    }
+
+    function applyFilters() {
+        const filters = getFilters();
+        saveFilters(filters);
+
+        // If you want FULL page reload:
+        window.location.href = `@Url.Action("Index")` +
+            `?displayAccountName=${filters.displayAccountName}` +
+            `&sortColumn=${filters.sortColumn}` +
+            `&ascending=${filters.ascending}`;
+    }
+
     function loadTransactions() {
+        const filters = getFilters();
+        saveFilters(filters);
 
-        const displayAccountName = document.getElementById("displayAccountName").checked;
-        const sortColumn = document.getElementById("sortColumn").value;
-        const ascending = document.getElementById("ascending").checked;
-
-        fetch(`/Transactions/Filter?displayAccountName=${displayAccountName}&sortColumn=${sortColumn}&ascending=${ascending}`)
+        fetch(`/Transactions/Filter?displayAccountName=${filters.displayAccountName}&sortColumn=${filters.sortColumn}&ascending=${filters.ascending}`)
             .then(response => response.text())
             .then(html => {
                 document.getElementById("transactionTable").innerHTML = html;
             });
     }
 
-    document.getElementById("displayAccountName").addEventListener("change", loadTransactions);
-    document.getElementById("sortColumn").addEventListener("change", loadTransactions);
-    document.getElementById("ascending").addEventListener("change", loadTransactions);
+    function onFilterChange() {
+        // Choose ONE behavior:
+
+        // Option A: AJAX update (recommended)
+        loadTransactions();
+
+        // Option B: full reload
+        // applyFilters();
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', function () {
+        restoreFilters();
+        loadTransactions();
+
+        filterIds.forEach(id => {
+            document.getElementById(id).addEventListener("change", onFilterChange);
+        });
+    });
+
+    // --- Existing functions (unchanged) ---
 
     function editSelected() {
         const checked = document.querySelectorAll('input[name="selectedIds"]:checked');
@@ -186,7 +245,6 @@
         const container = document.getElementById("bulkEditSelectedIds");
         container.innerHTML = "";
 
-        // Create hidden input for each selected transaction ID to be sent with the form
         checked.forEach(c => {
             container.innerHTML += `<input type="hidden" name="selectedIds" value="${c.value}" />`;
         });
