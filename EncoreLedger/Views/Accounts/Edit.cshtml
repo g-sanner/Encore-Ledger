@@ -1,0 +1,48 @@
+@using EncoreLedger.Models
+@model Account
+
+@{
+    ViewData["Title"] = "Edit Account";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+<link rel="stylesheet" href="~/css/forms.css" />
+
+<h1 class="page-title">Edit Account #@Model.IDAccount</h1>
+
+<div class="form-card">
+
+    <form method="post">
+
+        <input type="hidden" asp-for="IDAccount" />
+
+        <div class="form-grid">
+
+            <div>
+                <label>Account Name</label>
+                <input asp-for="AccountName" />
+            </div>
+
+            <div>
+                <label>Account Type</label>
+                <input asp-for="AccountType" />
+            </div>
+
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:15px; margin-top:20px;">
+
+            <button type="submit" formaction="@Url.Action("Edit")" class="btn-primary">
+                Save
+            </button>
+
+            <button type="submit" formaction="@Url.Action("Delete")" class="btn-primary"
+                    onclick="return confirm('Are you sure you want to delete this account?');">
+                Delete
+            </button>
+
+        </div>
+
+    </form>
+
+</div>

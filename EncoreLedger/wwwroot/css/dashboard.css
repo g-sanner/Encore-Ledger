@@ -34,6 +34,11 @@
     padding: 6px;
 }
 
+.majority-width {
+    width: 90%;
+    padding: 6px;
+}
+
 .mt-small {
     margin-top: 10px;
 }

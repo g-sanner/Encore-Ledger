@@ -1,0 +1,97 @@
+@model IEnumerable<EncoreLedger.Models.Account>
+
+@{
+    ViewData["Title"] = "Account Manager";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<h1 class="page-title">Account Manager</h1>
+
+<div class="dashboard-container">
+
+    <div class="sidebar">
+        <div class="card">
+            <h3>Add New Account</h3>
+            <form asp-action="Create" method="post">
+
+                <div>
+                    <label><strong>Name</strong></label><br />
+                    <input type="text" name="AccountName" class="majority-width" required />
+                </div>
+
+                <br />
+
+                <div>
+                    <label><strong>Account Type</strong></label><br />
+                    <input type="text" name="AccountType" class="majority-width" required />
+                </div>
+
+                <br />
+
+                <div>
+                    <button type="submit" class="btn-primary">+ Add</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        <form method="post">
+
+            <div class="table-actions">
+                <div></div>
+
+                <div class="action-group">
+                    <button type="button" class="btn-primary" onclick="editSelected()">
+                        Edit
+                    </button>
+
+                    <button type="submit" formaction="@Url.Action("Delete")" class="btn-primary"
+                            onclick="return confirm('Are you sure you want to delete this account?');">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <table class="ledger-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Account Name</th>
+                        <th>Account Type</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var account in Model)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selectedIds" value="@account.IDAccount" />
+                            </td>
+                            <td>@account.AccountName</td>
+                            <td>@account.AccountType</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+<script>
+    function editSelected() {
+        const checked = document.querySelectorAll('input[name="selectedIds"]:checked');
+
+        if (checked.length !== 1) {
+            alert("Please select exactly one account to edit.");
+            return;
+        }
+
+        const id = checked[0].value;
+        window.location.href = '/Accounts/Edit/' + id;
+    }
+</script>

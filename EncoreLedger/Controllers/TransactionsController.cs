@@ -63,7 +63,7 @@ namespace EncoreLedger.Controllers
 
             // Added for bulk edit modal window
             ViewBag.Categories = new SelectList(_context.Categories, "IDCategory", "Name");
-            ViewBag.Accounts = new SelectList(_context.Accounts, "IDAccount", "Name");
+            ViewBag.Accounts = new SelectList(_context.Accounts, "IDAccount", "AccountName");
 
             return View(vm);
         }
@@ -98,7 +98,7 @@ namespace EncoreLedger.Controllers
             ViewBag.Accounts = new SelectList(
                 _context.Accounts.ToList(),
                 "IDAccount",
-                "Name"
+                "AccountName"
             );
 
             ViewBag.Categories = new SelectList(
