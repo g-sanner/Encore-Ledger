@@ -17,7 +17,12 @@ Encore Ledger (v1.0.0) is a simple and user-friendly finance management applicat
 Built as a desktop application, it **requires no cloud connectivity or internet dependency**. With this application, your **financial data stays completely local** and secure on your computer.
 
 ## Features
-<!-- TO DO -->
+- **Transaction Tracking** – Record income and expense transactions
+- **Edit & Manage** – Modify or delete transaction entries as needed
+- **Customizable Categories** – Organize transactions with user-defined categories
+- **Bulk Import** – Import transactions from CSV files to save time on data entry
+- **Multi-Account Management** – Create and manage multiple accounts (checking, savings, etc.) in one place
+- **Local Data Storage** – All your financial data is stored locally on your computer for privacy and security
 
 ## Installation Instructions
 
