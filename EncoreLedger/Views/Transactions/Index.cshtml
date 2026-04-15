@@ -182,7 +182,6 @@
         const filters = getFilters();
         saveFilters(filters);
 
-        // If you want FULL page reload:
         window.location.href = `@Url.Action("Index")` +
             `?displayAccountName=${filters.displayAccountName}` +
             `&sortColumn=${filters.sortColumn}` +
@@ -201,13 +200,7 @@
     }
 
     function onFilterChange() {
-        // Choose ONE behavior:
-
-        // Option A: AJAX update (recommended)
         loadTransactions();
-
-        // Option B: full reload
-        // applyFilters();
     }
 
     // Init
@@ -219,8 +212,6 @@
             document.getElementById(id).addEventListener("change", onFilterChange);
         });
     });
-
-    // --- Existing functions (unchanged) ---
 
     function editSelected() {
         const checked = document.querySelectorAll('input[name="selectedIds"]:checked');
