@@ -11,7 +11,10 @@
 ---
 
 ## Overview
-<!-- TO DO -->
+
+Encore Ledger (v1.0.0) is a simple and user-friendly finance management application designed to help you track income and expenses across multiple bank accounts. 
+
+Built as a desktop application, it **requires no cloud connectivity or internet dependency**. With this application, your **financial data stays completely local** and secure on your computer.
 
 ## Features
 <!-- TO DO -->
