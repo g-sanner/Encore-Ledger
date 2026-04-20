@@ -1,6 +1,10 @@
 @using EncoreLedger.Models
 @model Category
 
+@{
+    ViewData["Title"] = "Edit Category #" + Model.IDCategory;
+}
+
 <link rel="stylesheet" href="~/css/dashboard.css" />
 <link rel="stylesheet" href="~/css/forms.css" />
 
@@ -11,6 +15,7 @@
     <form method="post">
 
         <input type="hidden" asp-for="IDCategory" />
+        <input type="hidden" name="selectedIds" value="@Model.IDCategory" />
 
         <div class="form-grid">
 
@@ -26,7 +31,7 @@
 
         </div>
 
-        <div style="display:flex; justify-content:flex-end; gap:15px; margin-top:20px;">
+        <div class="form-actions">
 
             <button type="submit" formaction="@Url.Action("Edit")" class="btn-primary">
                 Save

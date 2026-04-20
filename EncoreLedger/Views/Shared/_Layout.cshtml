@@ -21,12 +21,16 @@
                 Transactions
             </a>
 
-            <a asp-controller="Categories" asp-action="Index">Categories</a>
+            <a asp-controller="Categories" asp-action="Index"
+                   class="btn btn-outline-primary @(currentController == "Categories" ? "active" : "")">
+                Categories
+            </a>
 
             <a asp-controller="Accounts" asp-action="Index"
                    class="btn btn-outline-primary @(currentController == "Accounts" ? "active" : "")">
                 Accounts
             </a>
+
             <a asp-controller="Reports" asp-action="Index">Reports</a>
         </div>
     </div>

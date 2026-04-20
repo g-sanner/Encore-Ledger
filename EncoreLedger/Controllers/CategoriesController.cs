@@ -65,8 +65,33 @@ namespace EncoreLedger.Controllers
                     .Where(c => selectedIds.Contains(c.IDCategory))
                     .ToList();
 
+                var categoriesWithTransactions = new Dictionary<string, int>();
+
+                foreach (var category in categories)
+                {
+                    var transactionCount = _context.Transactions
+                        .Count(t => t.CategoryID == category.IDCategory);
+
+                    if (transactionCount > 0)
+                    {
+                        categoriesWithTransactions[category.Name ?? $"Category {category.IDCategory}"] = transactionCount;
+                    }
+                }
+
+                if (categoriesWithTransactions.Count > 0)
+                {
+                    var errorMessage = "Cannot delete the following category(s) because they have associated transaction(s):\n";
+                    foreach (var item in categoriesWithTransactions)
+                    {
+                        errorMessage += $"- {item.Key} ({item.Value} transaction{(item.Value > 1 ? "s" : "")})\n";
+                    }
+                    TempData["ErrorMessage"] = errorMessage;
+                    return RedirectToAction(nameof(Index));
+                }
+
                 _context.Categories.RemoveRange(categories);
-                _context.SaveChanges();
+                _context.SaveChanges();                
+                TempData["SuccessMessage"] = "Category(s) deleted successfully.";
             }
 
             return RedirectToAction(nameof(Index));
