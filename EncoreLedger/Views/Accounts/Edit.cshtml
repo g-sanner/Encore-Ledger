@@ -25,7 +25,13 @@
 
             <div>
                 <label>Account Type</label>
-                <input asp-for="AccountType" />
+                <select asp-for="AccountType" required>
+                    <option value="">-- Select Account Type --</option>
+                    <option value="Savings">Savings</option>
+                    <option value="Checkings">Checkings</option>
+                    <option value="Joint">Joint</option>
+                    <option value="Other">Other</option>
+                </select>
             </div>
 
         </div>

@@ -8,6 +8,21 @@
 
 <h1 class="page-title">Account Manager</h1>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="error-message">
+        <strong>Error:</strong>
+        <pre>@TempData["ErrorMessage"]</pre>
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="success-message">
+        <strong>Success:</strong> @TempData["SuccessMessage"]
+    </div>
+}
+
 <div class="dashboard-container">
 
     <div class="sidebar">
@@ -24,7 +39,13 @@
 
                 <div>
                     <label><strong>Account Type</strong></label><br />
-                    <input type="text" name="AccountType" class="majority-width" required />
+                    <select name="AccountType" class="majority-width" required>
+                        <option value="">-- Select Account Type --</option>
+                        <option value="Savings">Savings</option>
+                        <option value="Checkings">Checkings</option>
+                        <option value="Joint">Joint</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
 
                 <br />

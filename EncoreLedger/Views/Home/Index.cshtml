@@ -2,4 +2,26 @@
     ViewData["Title"] = "Home";
 }
 
-<h1>Welcome to Encore Ledger!</h1>
+<link rel="stylesheet" href="~/css/home.css" />
+
+@if (!(bool)ViewData["HasAccounts"])
+{
+    <h1>Welcome to Encore Ledger!</h1>
+
+    <div class="container">
+        <h2>Getting Started</h2>
+        <p>
+            Before you can create transactions, you need to set up at least one account.
+            Let's get started!
+        </p>
+        <a href="@Url.Action("Index", "Accounts")">
+            Create Your First Account
+        </a>
+    </div>
+}
+else
+{
+    <h1>Welcome back!</h1>
+
+    <p>Select a section from the navigation bar above to get started.</p>
+}
