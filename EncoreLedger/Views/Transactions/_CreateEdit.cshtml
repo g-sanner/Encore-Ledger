@@ -1,22 +1,41 @@
 @using EncoreLedger.Models
 @model Transaction
 
+<link rel="stylesheet" href="~/css/dashboard.css" />
+<link rel="stylesheet" href="~/css/forms.css" />
+
 <div>
     <label>Date of Transaction</label>
-    <input asp-for="TransactionDate" type="date" />
+    <input asp-for="TransactionDate" type="date" required />
+    <span asp-validation-for="TransactionDate"></span>
 </div>
 
 <div>
     <label>Category</label>
-    <select asp-for="CategoryID" asp-items="ViewBag.Categories"></select>
+    <select asp-for="CategoryID" asp-items="ViewBag.Categories">
+        <option value="">None</option>
+    </select>
 </div>
 
 <div>
     <label>Amount</label>
-    <input asp-for="Amount" />
+    <input asp-for="Amount" required />
+    <span asp-validation-for="Amount"></span>
 </div>
 
 <div>
     <label>Description</label>
     <input asp-for="Description" />
+</div>
+
+<div>
+    <label>Account</label>
+    <select asp-for="AccountID" asp-items="ViewBag.Accounts" required>
+        <option value="">-- Select Account --</option>
+    </select>
+</div>
+
+<div class="full-width">
+    <label>Notes</label>
+    <textarea asp-for="Notes"></textarea>
 </div>

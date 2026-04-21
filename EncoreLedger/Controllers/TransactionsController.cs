@@ -85,6 +85,7 @@ namespace EncoreLedger.Controllers
 
             transaction.DateCreated = DateTime.Now;
             transaction.DateEdited = DateTime.Now;
+            transaction.InsertType = "Manual";
 
             _context.Add(transaction);
             _context.SaveChanges();
@@ -166,6 +167,7 @@ namespace EncoreLedger.Controllers
 
             _context.Transactions.Remove(transaction);
             _context.SaveChanges();
+            TempData["SuccessMessage"] = "Transaction deleted successfully.";
 
             return RedirectToAction(nameof(Index));
         }
@@ -183,6 +185,8 @@ namespace EncoreLedger.Controllers
 
                 _context.Transactions.RemoveRange(transactions);
                 _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Transaction(s) deleted successfully.";
             }
 
             return RedirectToAction(nameof(Index));
@@ -208,6 +212,10 @@ namespace EncoreLedger.Controllers
                 "Amount" => ascending
                     ? query.OrderBy(t => t.Amount)
                     : query.OrderByDescending(t => t.Amount),
+
+                "Account" => ascending
+                    ? query.OrderBy(t => t.Account.AccountName)
+                    : query.OrderByDescending(t => t.Account.AccountName),
 
                 _ => ascending
                     ? query.OrderBy(t => t.TransactionDate)
@@ -487,11 +495,11 @@ namespace EncoreLedger.Controllers
                     TransactionDate = date,
                     Description = row[descIndex.Value],
                     Amount = amount,
-                    AccountID = null,
-                    // AccountID = accountID,s
+                    AccountID = accountID,
                     BulkImport = bulkImport,
                     DateCreated = DateTime.Now,
-                    DateEdited = DateTime.Now
+                    DateEdited = DateTime.Now,
+                    InsertType = "BulkImport"
                 };
 
                 bulkImport.Transactions.Add(transaction);

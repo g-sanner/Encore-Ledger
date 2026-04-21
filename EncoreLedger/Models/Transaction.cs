@@ -1,9 +1,14 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace EncoreLedger.Models
 {
     public class Transaction
     {
         public int IDTransaction { get; set; }
         public string? Description { get; set; }
+
+        [Range(typeof(decimal), "-1000000000", "1000000000", ErrorMessage = "Enter a valid dollar amount.")]
+        [RegularExpression(@"^-?\d+(\.\d{1,2})?$", ErrorMessage = "Amount must have at most 2 decimal places.")]
         public decimal Amount { get; set; }
         public string? Notes { get; set; }
         public string? InsertType { get; set; }

@@ -8,9 +8,26 @@
 
 <h1 class="page-title">Transaction Dashboard</h1>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="error-message">
+        <strong>Error:</strong>
+        <pre>@TempData["ErrorMessage"]</pre>
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="success-message">
+        <strong>Success:</strong> @TempData["SuccessMessage"]
+    </div>
+}
+
 @if (TempData["ImportMessage"] != null)
 {
-    <div>@TempData["ImportMessage"]</div>
+    <div class="import-message">
+        <strong>Import:</strong> @TempData["ImportMessage"]
+    </div>
 }
 
 <div class="dashboard-container">
@@ -41,8 +58,9 @@
 
             <select id="sortColumn" class="full-width">
                 <option value="Date">Date</option>
-                <option value="Category">Category</option>
                 <option value="Amount">Amount</option>
+                <option value="Category">Category</option>
+                <option value="Account">Account</option>
             </select>
 
             <p class="mt-small">

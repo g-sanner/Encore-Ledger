@@ -1,6 +1,10 @@
 @using EncoreLedger.Models
 @model Transaction
 
+@{
+    ViewData["Title"] = "Create Transaction";
+}
+
 <link rel="stylesheet" href="~/css/dashboard.css" />
 <link rel="stylesheet" href="~/css/forms.css" />
 
@@ -12,16 +16,6 @@
 
         <div class="form-grid">
             @await Html.PartialAsync("_CreateEdit", Model)
-
-            <div>
-                <label>Account</label>
-                <select asp-for="AccountID" asp-items="ViewBag.Accounts"></select>
-            </div>
-
-            <div class="full-width">
-                <label>Notes</label>
-                <textarea asp-for="Notes"></textarea>
-            </div>
         </div>
 
         <div class="form-actions">

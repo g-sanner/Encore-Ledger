@@ -25,12 +25,12 @@
 
 .card-row {
     display: flex;
-    gap: 20px;      
+    gap: 20px;
     align-items: stretch;
 }
 
 .card-row .card {
-    flex: 1;          
+    flex: 1;
 }
 
 .page-title {
@@ -277,6 +277,20 @@
     font-family: Arial, sans-serif;
 }
 
+/* Import message style */
+.import-message {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 15px 0;
+    color: #856404;
+}
+
+.import-message strong {
+    font-weight: bold;
+}
+
 /* Success message style */
 .success-message {
     background-color: #d4edda;
@@ -289,4 +303,17 @@
 
 .success-message strong {
     font-weight: bold;
+}
+
+.field-validation-error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin: 15px 0;
+    color: #721c24;
+    font-size: 0.9rem;
+}
+
+.field-validation-valid {
+    display: none;
 }
