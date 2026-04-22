@@ -220,7 +220,35 @@ Following are some additional in-depth tutorials on how to utilize all the featu
 <!-- TO DO -->
 
 ## FAQ
-<!-- TO DO -->
+
+### **Does Encore Ledger require internet?**
+No — it is fully offline. All data stays on your device.
+
+### **Where is my data stored?**
+In a local SQLite database file inside the application folder.
+
+### **Can I back up my data?**
+Yes — copy the `.db` file to any backup location.
+
+### **Can I move Encore Ledger to another computer?**
+Yes — copy the entire extracted folder (including the `.db` file).
+
+### **Can I import transactions from my bank?**
+Yes — as long as your bank provides a CSV export.
+
+#### **Does the app auto-save?**
+No, not as of v.2.0.0
+
+#### **Can I customize categories?**
+Yes — categories can be added, renamed, or removed.
+
+#### **Is my data encrypted?**
+Data is local but not encrypted by default.
+
+#### **Will there be future updates?**
+Future updates will be posted in the **Releases** section.
+
+
 
 ## License
 <!-- TO DO -->
