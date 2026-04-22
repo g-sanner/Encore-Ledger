@@ -217,7 +217,26 @@ Following are some additional in-depth tutorials on how to utilize all the featu
 </details>
 
 ## Troubleshooting
-<!-- TO DO -->
+
+### **The app won't start or shows a security warning**
+- Windows may block the app on first run. Click **More Info** → **Run Anyway** when the security prompt appears.
+- Ensure you have **.NET 10.0 Runtime** installed on your system. Download it from [microsoft.com/net](https://dotnet.microsoft.com/download).
+- Try running the app as Administrator (right-click → **Run as administrator**).
+
+### **CSV import fails or shows an error**
+- Ensure the CSV file is not open in another program (like Excel).
+- Try saving the CSV file as UTF-8 encoded to avoid character encoding issues.
+
+### **Application crashes or freezes**
+- Restart the application.
+- Try moving the app to a different folder and run it again.
+- Delete the application folder and re-extract the `.zip` file from the Releases section.
+- If the issue persists, check that your computer meets the minimum system requirements for .NET 10.0.
+
+### **"Can't find the database" error**
+- Ensure you extracted the entire folder correctly (all files and subfolders).
+- Do not move or delete any files from the application folder.
+- If corrupted, restore from a backup or re-extract the release.
 
 ## FAQ
 
@@ -247,8 +266,6 @@ Data is local but not encrypted by default.
 
 #### **Will there be future updates?**
 Future updates will be posted in the **Releases** section.
-
-
 
 ## License
 <!-- TO DO -->
