@@ -82,7 +82,7 @@ namespace EncoreLedger.Controllers
                 LoadDropdowns();
                 return View(transaction);
             }
-
+ 
             transaction.DateCreated = DateTime.Now;
             transaction.DateEdited = DateTime.Now;
             transaction.InsertType = "Manual";

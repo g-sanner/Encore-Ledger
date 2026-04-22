@@ -30,6 +30,9 @@ namespace EncoreLedger.Controllers
 
             if (ModelState.IsValid)
             {
+                account.DateCreated = DateTime.Now;
+                account.DateEdited = DateTime.Now;
+
                 _context.Accounts.Add(account);
                 _context.SaveChanges();
             }
@@ -57,6 +60,9 @@ namespace EncoreLedger.Controllers
 
             if (ModelState.IsValid)
             {
+                // Update the edited timestamp
+                account.DateEdited = DateTime.Now;
+
                 _context.Accounts.Update(account);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));

@@ -24,6 +24,9 @@ namespace EncoreLedger.Controllers
         {
             if (ModelState.IsValid)
             {
+                category.DateCreated = DateTime.Now;
+                category.DateEdited = DateTime.Now;
+
                 _context.Categories.Add(category);
                 _context.SaveChanges();
             }
@@ -46,6 +49,9 @@ namespace EncoreLedger.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Update the edited timestamp
+                category.DateEdited = DateTime.Now;
+
                 _context.Categories.Update(category);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
@@ -90,7 +96,7 @@ namespace EncoreLedger.Controllers
                 }
 
                 _context.Categories.RemoveRange(categories);
-                _context.SaveChanges();                
+                _context.SaveChanges();
                 TempData["SuccessMessage"] = "Category(s) deleted successfully.";
             }
 
