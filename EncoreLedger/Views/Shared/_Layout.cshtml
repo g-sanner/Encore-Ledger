@@ -31,7 +31,10 @@
                 Accounts
             </a>
 
-            <a asp-controller="Reports" asp-action="Index">Reports</a>
+            <a asp-controller="Reports" asp-action="Index"
+                   class="btn btn-outline-primary @(currentController == "Reports" ? "active" : "")">
+                Reports
+            </a>
         </div>
     </div>
 

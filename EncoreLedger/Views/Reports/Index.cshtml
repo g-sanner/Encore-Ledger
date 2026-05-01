@@ -1,0 +1,103 @@
+@using EncoreLedger.Models
+
+@{
+    ViewData["Title"] = "Reports Dashboard";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<h1 class="page-title">Reports Dashboard</h1>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="error-message">
+        <strong>Error:</strong>
+        <pre>@TempData["ErrorMessage"]</pre>
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="success-message">
+        <strong>Success:</strong> @TempData["SuccessMessage"]
+    </div>
+}
+
+<div class="dashboard-container">
+
+    <div class="sidebar">
+        <div class="card">
+            <h3>Run New Report</h3>
+            <form asp-action="Create" method="post">
+
+                <div>
+                    <label><strong>Date(s)</strong></label> <br />
+                    <input type="date" class="majority-width" required />
+                    <!-- <span asp-validation-for="TransactionDate"></span> -->
+                </div>
+
+                <br />
+
+                <div>
+                    <label><strong>Account(s)</strong></label> <br />
+                    <select asp-items="ViewBag.Accounts" class="majority-width" required>
+                        <option value="">-- Select Account --</option>
+                    </select>
+                </div>
+
+                <br />
+                
+                <div>
+                    <button type="submit" class="btn-primary">+ Add</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        <form method="post">
+
+            <div class="table-actions">
+                <div></div>
+
+                <div class="action-group">
+                    <button type="button" class="btn-primary" onclick="exportSelected()">
+                        Export
+                    </button>
+
+                    <button type="submit" formaction="@Url.Action("Delete")" class="btn-primary"
+                            onclick="return confirm('Are you sure you want to delete this category?');">
+                        Delete
+                    </button>
+                </div>
+            </div>
+            <table class="ledger-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Date</th>
+                        <th>Report Name</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+<script>
+    function exportSelected() {
+        const checked = document.querySelectorAll('input[name="selectedIds"]:checked');
+
+        if (checked.length === 0) {
+            alert("Please select at least one report to export.");
+            return;
+        }
+
+        // Implement export logic here
+    }
+</script>
