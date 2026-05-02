@@ -15,6 +15,7 @@ namespace EncoreLedger.Data
         public DbSet<Account> Accounts { get; set; }
         public DbSet<BulkImport> BulkImports { get; set; }
         public DbSet<ImportMapping> ImportMappings { get; set; }
+        public DbSet<Report> Reports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,7 @@ namespace EncoreLedger.Data
             modelBuilder.Entity<Account>().ToTable("Account").HasKey(a => a.IDAccount);
             modelBuilder.Entity<BulkImport>().ToTable("BulkImport").HasKey(b => b.IDBulkImport);
             modelBuilder.Entity<ImportMapping>().ToTable("ImportMapping").HasKey(m => m.IDImportMapping);
+            modelBuilder.Entity<Report>().ToTable("Report").HasKey(r => r.IDReport);
 
             // One-to-many: Category -> Transaction
             modelBuilder.Entity<Transaction>()

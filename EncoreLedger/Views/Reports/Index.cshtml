@@ -1,4 +1,4 @@
-@using EncoreLedger.Models
+@model IEnumerable<EncoreLedger.Models.Report>
 
 @{
     ViewData["Title"] = "Reports Dashboard";
@@ -83,6 +83,16 @@
                 </thead>
 
                 <tbody>
+                    @foreach (var report in Model)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selectedIds" value="@report.IDReport" />
+                            </td>
+                            <td>@report.DateCreated.ToShortDateString()</td>
+                            <td>@report.FileName</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </form>

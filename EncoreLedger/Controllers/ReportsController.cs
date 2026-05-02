@@ -17,8 +17,9 @@ namespace EncoreLedger.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.Accounts = new SelectList(_context.Accounts, "IDAccount", "AccountName");
-
-            return View();
+            
+            var reports = await _context.Reports.OrderByDescending(r => r.DateCreated).ToListAsync();
+            return View(reports);
         }
     }
 }
