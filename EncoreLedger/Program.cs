@@ -1,6 +1,6 @@
 using EncoreLedger.Data;
+using EncoreLedger.Services;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +15,10 @@ var dbPath = Path.Combine(appFolder, "EncoreLedger.db");
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
+
+// Add business logic services
+builder.Services.AddScoped<ReportGenerationService>();
+builder.Services.AddScoped<ReportService>();
 
 var app = builder.Build();
 
@@ -58,32 +62,3 @@ catch { }
 
 // Run the app
 app.Run();
-
-/*
-app.MapGet("/transactions", () =>
-{
-    using var connection = new SqliteConnection(connectionString);
-    connection.Open();
-
-    var command = connection.CreateCommand();
-    command.CommandText = """
-        SELECT IDTransaction, Description, Amount FROM "Transaction"
-    """;
-
-    using var reader = command.ExecuteReader();
-
-    var results = new List<object>();
-
-    while (reader.Read())
-    {
-        results.Add(new
-        {
-            IDTransaction = reader.GetInt32(0),
-            Description = reader.GetString(1),
-            Amount = reader.GetDecimal(2)
-        });
-    }
-
-    return results;
-});
-*/

@@ -25,30 +25,37 @@
 
 <div class="dashboard-container">
 
-    <div class="sidebar">
+    <div class="sidebar"> 
         <div class="card">
             <h3>Run New Report</h3>
-            <form asp-action="Create" method="post">
+            <form asp-action="GenerateReport" method="post">
 
                 <div>
-                    <label><strong>Date(s)</strong></label> <br />
-                    <input type="date" class="majority-width" required />
-                    <!-- <span asp-validation-for="TransactionDate"></span> -->
+                    <label><strong>Start Date</strong></label> <br />
+                    <input type="date" name="startDate" class="majority-width" required />
                 </div>
 
                 <br />
 
                 <div>
-                    <label><strong>Account(s)</strong></label> <br />
-                    <select asp-items="ViewBag.Accounts" class="majority-width" required>
-                        <option value="">-- Select Account --</option>
+                    <label><strong>End Date (Optional)</strong></label> <br />
+                    <input type="date" name="endDate" class="majority-width" />
+                    <small>Leave blank for daily report</small>
+                </div>
+
+                <br />
+
+                <div>
+                    <label><strong>Account</strong></label> <br />
+                    <select name="accountId" asp-items="ViewBag.Accounts" class="majority-width">
+                        <option value="">-- All Accounts --</option>
                     </select>
                 </div>
 
                 <br />
                 
                 <div>
-                    <button type="submit" class="btn-primary">+ Add</button>
+                    <button type="submit" class="btn-primary">+ Generate Report</button>
                 </div>
 
             </form>
@@ -63,12 +70,8 @@
                 <div></div>
 
                 <div class="action-group">
-                    <button type="button" class="btn-primary" onclick="exportSelected()">
-                        Export
-                    </button>
-
                     <button type="submit" formaction="@Url.Action("Delete")" class="btn-primary"
-                            onclick="return confirm('Are you sure you want to delete this category?');">
+                            onclick="return confirm('Are you sure you want to delete the selected report(s)?');">
                         Delete
                     </button>
                 </div>
@@ -79,6 +82,7 @@
                         <th></th>
                         <th>Date</th>
                         <th>Report Name</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
@@ -91,6 +95,14 @@
                             </td>
                             <td>@report.DateCreated.ToShortDateString()</td>
                             <td>@report.FileName</td>
+                            <td>
+                                <a href="@Url.Action("ViewReport", new { id = report.IDReport })" class="btn-primary" style="text-decoration: none; padding: 5px 10px; display: inline-block; margin-right: 5px;">
+                                    View
+                                </a>
+                                <a href="@Url.Action("DownloadReport", new { id = report.IDReport })" class="btn-primary" style="text-decoration: none; padding: 5px 10px; display: inline-block;">
+                                    Download
+                                </a>
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -98,16 +110,3 @@
         </form>
     </div>
 </div>
-
-<script>
-    function exportSelected() {
-        const checked = document.querySelectorAll('input[name="selectedIds"]:checked');
-
-        if (checked.length === 0) {
-            alert("Please select at least one report to export.");
-            return;
-        }
-
-        // Implement export logic here
-    }
-</script>
