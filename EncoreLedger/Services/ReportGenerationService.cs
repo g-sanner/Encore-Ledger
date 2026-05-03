@@ -4,11 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EncoreLedger.Services
 {
-    public class ReportGenerationService
+    // C# implementation of report generation.
+    // Queries database directly and performs calculations in-memory.
+    public class CSharpReportGenerator : IReportGenerator
     {
         private readonly ApplicationDbContext _context;
 
-        public ReportGenerationService(ApplicationDbContext context)
+        public CSharpReportGenerator(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -113,6 +115,11 @@ namespace EncoreLedger.Services
             // TODO: Implement PDF rendering using iText7 or PdfSharp
             // For now, return empty byte array as placeholder
             throw new NotImplementedException("PDF rendering not yet implemented. Add iText7 or PdfSharp NuGet package.");
+        }
+
+        public string GetImplementationName()
+        {
+            return "C#";
         }
     }
 }

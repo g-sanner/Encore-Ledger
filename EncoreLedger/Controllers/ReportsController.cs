@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EncoreLedger.Data;
 using EncoreLedger.Services;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EncoreLedger.Controllers
@@ -9,19 +9,23 @@ namespace EncoreLedger.Controllers
     public class ReportsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly ReportGenerationService _reportGenerationService;
+        private readonly IReportGenerator _reportGenerator;
         private readonly ReportService _reportService;
+        private readonly ILogger<ReportsController> _logger;
 
-        public ReportsController(ApplicationDbContext context, ReportGenerationService reportGenerationService, ReportService reportService)
+        public ReportsController(ApplicationDbContext context, IReportGenerator reportGenerator, ReportService reportService, ILogger<ReportsController> logger)
         {
             _context = context;
-            _reportGenerationService = reportGenerationService;
+            _reportGenerator = reportGenerator;
             _reportService = reportService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
             ViewBag.Accounts = new SelectList(_context.Accounts, "IDAccount", "AccountName");
+
+            _logger.LogInformation("Report Generator: {Name}", _reportGenerator.GetImplementationName()); ;
 
             var reports = await _context.Reports.OrderByDescending(r => r.DateCreated).ToListAsync();
             return View(reports);
@@ -35,11 +39,11 @@ namespace EncoreLedger.Controllers
                 // If endDate is not provided, use startDate (daily report)
                 DateTime actualEndDate = endDate ?? startDate;
 
-                // Generate report for the given date range
-                var reportData = await _reportGenerationService.GenerateReportData(startDate, actualEndDate);
+                // Generate report for the given date range (uses C# or COBOL based on config)
+                var reportData = await _reportGenerator.GenerateReportData(startDate, actualEndDate);
 
-                // Render as text (PDF rendering will be implemented in Phase 5)
-                string textReport = _reportGenerationService.RenderReportAsText(reportData);
+                // Render as text
+                string textReport = _reportGenerator.RenderReportAsText(reportData);
 
                 // For now, store the text report as a placeholder
                 // TODO: Once PDF library is added, convert to PDF here
