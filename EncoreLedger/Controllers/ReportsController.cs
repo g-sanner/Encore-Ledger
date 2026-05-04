@@ -65,7 +65,18 @@ namespace EncoreLedger.Controllers
                 // Save to database
                 await _reportService.SaveReport(startDate, actualEndDate, reportContent, fileName);
 
-                TempData["SuccessMessage"] = $"Report generated successfully";
+                // Determine if COBOL ran or if fallback was used
+                var executionEngine = _reportGenerator is FallbackReportGenerator fallback
+                    ? fallback.LastExecutionEngine
+                    : _reportGenerator.GetImplementationName();
+                var fallbackReasonSuffix = _reportGenerator is FallbackReportGenerator fallbackWithReason
+                    && executionEngine.StartsWith("C#", StringComparison.OrdinalIgnoreCase)
+                    && !string.IsNullOrWhiteSpace(fallbackWithReason.LastFallbackReason)
+                    ? $" Reason: {fallbackWithReason.LastFallbackReason}"
+                    : string.Empty;
+                TempData["SuccessMessage"] = $"Report generated successfully via {executionEngine}.{fallbackReasonSuffix}";
+                _logger.LogInformation("Report generation execution engine: {Engine}", executionEngine);
+                
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

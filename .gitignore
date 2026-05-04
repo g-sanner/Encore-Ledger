@@ -11,3 +11,7 @@ obj/
 *.db-wal
 *.sqlite
 *.sqlite3
+
+# COBOL build/runtime artifacts (platform-specific binaries)
+cobol/*.exe
+cobol/*.dll

@@ -6,7 +6,6 @@ using System.Text.Json;
 
 namespace EncoreLedger.Services
 {
-
     // COBOL implementation of report generation.
     // Serializes transaction data to a file, calls a compiled COBOL executable,
     // and parses the output back into ReportData.
@@ -23,8 +22,9 @@ namespace EncoreLedger.Services
             _logger = logger;
 
             // Get COBOL executable path from configuration
-            _cobolExecutablePath = configuration["ReportGeneration:CobolExecutablePath"] 
+            var configuredPath = configuration["ReportGeneration:CobolExecutablePath"]
                 ?? throw new InvalidOperationException("ReportGeneration:CobolExecutablePath not configured");
+            _cobolExecutablePath = ResolveExecutablePath(configuredPath);
 
             // Use app data folder for temp files
             var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -256,6 +256,31 @@ namespace EncoreLedger.Services
         public string GetImplementationName()
         {
             return "COBOL";
+        }
+
+        private static string ResolveExecutablePath(string configuredPath)
+        {
+            if (Path.IsPathRooted(configuredPath))
+            {
+                return configuredPath;
+            }
+
+            var candidates = new[]
+            {
+                Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, configuredPath)),
+                Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), configuredPath))
+            };
+
+            foreach (var candidate in candidates)
+            {
+                if (File.Exists(candidate))
+                {
+                    return candidate;
+                }
+            }
+
+            // Return a deterministic candidate for diagnostics if the file does not yet exist.
+            return candidates[0];
         }
     }
 }
